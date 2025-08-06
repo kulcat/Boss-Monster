@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boss Monster</title>
+  <link href="style.css" rel="stylesheet" type="text/css">
+  <script src="app.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <h1>Boss Monster Game</h1>
+  </header>
+  <main>
+    <div id="heroesContainer">
+
+      <div id="a" class="hero">
+        <img src="images/placeholder.png" onclick="healHero('a')">
+        <span class="name">a</span>
+        <span class="health">HP: 100</span>
+        <span class="healthBar"></span>
+        <span class="healCost">Cost to heal: 5 gold</span>
+      </div>
+
+      <div id="b" class="hero">
+        <img src="images/placeholder.png" onclick="healHero('b')">
+        <span class="name">b</span>
+        <span class="health">HP: 100</span>
+        <span class="healthBar"></span>
+        <span class="healCost">Click to Heal: 5 gold</span>
+      </div>
+
+      <div id="c" class="hero locked">
+        <img src="images/placeholder.png" onclick="healHero('b')">
+        <span class="name">c</span>
+        <span class="health">HP: 100</span>
+        <span class="healthBar"></span>
+        <span class="healCost">Click to Heal: 5 gold</span>
+      </div>
+
+      <div id="d" class="hero locked">
+        <img src="images/placeholder.png" onclick="healHero('b')">
+        <span class="name">d</span>
+        <span class="health">HP: 100</span>
+        <span class="healthBar"></span>
+        <span class="healCost">Click to Heal: 5 gold</span>
+      </div>
+
+    </div>
+    <div id="bossContainer">
+
+      <div id="boss" class="boss">
+        <div id="bossStats">
+          <span class="name">Boss</span>
+          <span class="health">HP: 100</span>
+          <span class="healthBar"></span>
+          <span class="level">LVL: 1</span>
+        </div>
+        <img src="images/placeholder.png" onclick="attackBoss()">
+      </div>
+
+    </div>
+    <div id="optionsContainer">
+      <div id="store">
+        <span id="heroGold">Gold: 0</span>
+        <div id="items">
+          <div class="item">
+
+          </div>
+        </div>
+      </div>
+      <div id="alerts">
+
+      </div>
+      <button id="reset" onclick="resetGame()">Reset</button>
+    </div>
+  </main>
+</body>
+
+</html>
