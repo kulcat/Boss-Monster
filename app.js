@@ -289,6 +289,18 @@ function drawBossLevel() {
   bossLevelElm.innerText = "LVL: " + boss.level;
 }
 
+// UI update
+heroes.forEach(hero => {
+  if (hero.unlocked === true) {
+    drawHeroHealth(hero);
+    drawHeroLevel(hero);
+  }
+});
+
+drawHeroGold();
+drawBossHealth();
+drawBossLevel();
+
 // Store
 let heroPrice = 500;
 let autoHealPrice = 1000;
@@ -304,14 +316,14 @@ function buyItem(itemName) {
       if (heroGold >= autoHealPrice) {
         autoHealInterval = setInterval(() => {
           heroes.forEach(hero => {
-            if (hero.unlocked === true && hero.health > 0) {
+            if (hero.unlocked === true && hero.health > 0 && hero.health < hero.maxHealth) {
               healHero(hero.name);
             }
           });
         }, autoHealRate);
         heroGold -= autoHealPrice;
         drawHeroGold();
-        item.classList.add('disabled');
+        item.attributes.add('disabled');
       }
       else {
         drawAlert("Not enough gold.");
@@ -324,12 +336,14 @@ function buyItem(itemName) {
 
         let heroElm = document.getElementById(hero.name);
         heroElm.classList.remove("d-none");
+        drawHeroHealth(hero);
+        drawHeroLevel(hero);
 
         heroGold -= heroPrice;
         drawHeroGold();
 
         if (heroes.findIndex(hero => hero.unlocked === false) === 0) {
-          item.classList('disabled');
+          item.attributes.add('disabled');
         }
       }
       else {
