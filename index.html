@@ -23,11 +23,11 @@
   <main class="container-fluid g-0 fs-5">
 
     <div id="heroesContainer" class="row w-50 g-0">
+
       <div id="a" class="hero col d-flex flex-column align-items-center">
         <img class="w-25" src="images/placeholder.png" onclick="healHero('a')">
         <span class="name">a</span>
         <span class="health">HP: 100</span>
-        <!-- <span class="healthBar"></span> -->
         <span class="healCost">Click to Heal: 2 gold</span>
         <span class="unlock"></span>
       </div>
@@ -36,24 +36,24 @@
         <img class="w-25" src="images/placeholder.png" onclick="healHero('b')">
         <span class="name">b</span>
         <span class="health">HP: 100</span>
-        <!-- <span class="healthBar"></span> -->
         <span class="healCost">Click to Heal: 2 gold</span>
       </div>
     </div>
 
     <div id="bossContainer" class="row justify-content-center g-0">
+
       <div id="boss" class="boss w-25 d-flex flex-column align-items-center">
         <span class="name h2">Boss</span>
         <span class="health">HP: 100</span>
-        <!-- <span class="healthBar"></span> -->
         <span class="level">LVL: 1</span>
         <img class="w-75" src="images/placeholder.png" onclick="attackBoss()">
       </div>
+
     </div>
 
-    <div id="optionsContainer" class="row">
+    <div id="optionsContainer" class="row w-100 g-0 justify-content-center text-center">
 
-      <div id="store" class="col">
+      <div id="store" class="col d-flex flex-column align-items-center ">
         <span id="heroGold">Gold: 0</span>
         <div id="items">
           <div class="item">
@@ -62,9 +62,9 @@
         </div>
       </div>
 
-      <div id="alerts" class="col d-flex flex-column"></div>
+      <div id="alerts" class="col d-flex flex-column align-items-center"></div>
 
-      <div class="col">
+      <div class="col d-flex flex-column align-items-center">
         <button id="reset" onclick="resetGame()">Reset</button>
       </div>
 

@@ -24,7 +24,7 @@ const bossDefault = {
   maxHealth: 100,
   damage: 5,
   level: 1,
-  attackRate: 2000,
+  attackRate: 250, //2000
 };
 
 // Modifiable arrays
@@ -49,9 +49,11 @@ function healHero(name) {
       case 0:
         drawAlert("Hero is dead, cannot be healed.");
         break;
+
       case 100:
         drawAlert("Hero HP is full, cannot be healed.");
         break;
+
       default:
         if (heroGold >= healCost) {
           if ((hero.health + healAmount) > hero.maxHealth) {
@@ -114,18 +116,19 @@ function bossAttack() {
     let totalHeroHealth = 0;
 
     heroes.forEach(hero => {
-      hero.health -= (boss.damage * boss.level);
+      if (hero.health > 0) {
+        hero.health -= (boss.damage * Math.ceil(boss.level / 2));
 
-      totalHeroHealth += hero.health;
-      drawHeroHealth(hero);
+        totalHeroHealth += hero.health;
+        drawHeroHealth(hero);
+      }
+      else {
+        hero.health = 0;
+        drawHeroHealth(hero);
+      }
     });
 
     if (totalHeroHealth <= 0) {
-      heroes.forEach(hero => {
-        hero.health = 0;
-        drawHeroHealth(hero);
-      });
-
       // Game End
       clearInterval(bossAttackInterval);
       isGameOver = true;
@@ -148,7 +151,7 @@ function drawBossLevel() {
 
 function levelUpBoss() {
   boss.level++;
-  boss.maxHealth *= boss.level;
+  boss.maxHealth *= Math.ceil(boss.level / 2);
   boss.health = boss.maxHealth;
 
   // increase attack rate by 5% each level
@@ -185,7 +188,7 @@ function resetGame() {
   let alertsContainer = document.getElementById('alerts');
   alertsContainer.innerHTML = '';
 
-  // Redraw UI values
+  // update DOM/UI
   heroes.forEach(hero => {
     drawHeroHealth(hero);
   });
@@ -199,9 +202,9 @@ function drawAlert(message) {
   let alertsContainer = document.getElementById('alerts');
 
   if (isGameOver) {
-    alertsContainer.innerHTML = `<span class="alert">-GAME OVER</span>`;
+    alertsContainer.innerHTML = `<span class="alert text-danger">-GAME OVER</span>`;
   }
   else {
-    alertsContainer.innerHTML = `<span class="alert">-${message}</span>`;
+    alertsContainer.innerHTML = `<span class="alert text-warning">-${message}</span>`;
   }
 }
