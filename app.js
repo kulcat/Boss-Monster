@@ -156,28 +156,6 @@ function levelUpHero(name) {
   }
 }
 
-function unlockHero(name) {
-  let hero = heroes.find(hero => hero.name === name);
-
-  if (hero.unlocked === false) {
-    if (heroGold >= 100) {
-      hero.unlocked = true;
-      heroGold -= 100;
-
-      let heroElm = document.getElementById(name);
-      heroElm.classList.remove("d-none");
-
-      heroElm.
-
-        drawHeroGold();
-    }
-    else {
-      drawAlert("Not enough gold to unlock.");
-    }
-  }
-}
-
-
 // Awards heroes gold for defeating a boss
 function awardHeroes() {
   heroGold += (baseGoldAwarded * boss.level);
@@ -321,7 +299,6 @@ function buyItem(itemName) {
             }
           });
         }, autoHealRate);
-        heroGold -= autoHealPrice;
         drawHeroGold();
 
         // make button disabled after purchasing

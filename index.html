@@ -22,13 +22,15 @@
 
   <main class="container-fluid g-0 fs-6">
 
-    <div id="heroesContainer" class="row w-100 g-0">
+    <div id="heroesContainer" class="row justify-content-around w-100 g-0">
 
       <div id="knight" class="hero col d-flex flex-column align-items-center">
         <img class="w-25" src="images/placeholder.png" onclick="healHero(this.parentElement.id)">
         <span class="h4 name">Knight</span>
-        <span class="health"></span>
-        <span class="level"></span>
+        <div>
+          <span class="health"></span>
+          <span class="level"></span>
+        </div>
         <span class="healCost">Click to Heal: 2</span>
         <button class="btn btn-dark levelUp" onclick="levelUpHero(this.parentElement.id)">LVL Up: 100</button>
       </div>
@@ -36,8 +38,10 @@
       <div id="archer" class="hero col d-flex flex-column align-items-center">
         <img class="w-25" src="images/placeholder.png" onclick="healHero(this.parentElement.id)">
         <span class="h4 name">Archer</span>
-        <span class="health"></span>
-        <span class="level"></span>
+        <div>
+          <span class="health"></span>
+          <span class="level"></span>
+        </div>
         <span class="healCost">Click to Heal: 2</span>
         <button class="btn btn-dark levelUp" onclick="levelUpHero(this.parentElement.id)">LVL Up: 100</button>
       </div>
@@ -45,8 +49,10 @@
       <div id="mage" class="hero col d-flex flex-column align-items-center d-none">
         <img class="w-25" src="images/placeholder.png" onclick="healHero(this.parentElement.id)">
         <span class="h4 name">Mage</span>
-        <span class="health"></span>
-        <span class="level"></span>
+        <div>
+          <span class="health"></span>
+          <span class="level"></span>
+        </div>
         <span class="healCost">Click to Heal: 2</span>
         <button class="btn btn-dark levelUp" onclick="levelUpHero(this.parentElement.id)">LVL Up: 100</button>
       </div>
@@ -54,8 +60,10 @@
       <div id="assassin" class="hero col d-flex flex-column align-items-center d-none">
         <img class="w-25" src="images/placeholder.png" onclick="healHero(this.parentElement.id)">
         <span class="h4 name">Assassin</span>
-        <span class="health"></span>
-        <span class="level"></span>
+        <div>
+          <span class="health"></span>
+          <span class="level"></span>
+        </div>
         <span class="healCost">Click to Heal: 2</span>
         <button class="btn btn-dark levelUp" onclick="levelUpHero(this.parentElement.id)">LVL Up: 100</button>
       </div>
@@ -66,8 +74,10 @@
 
       <div id="boss" class="boss w-25 d-flex flex-column align-items-center">
         <span class="name h2">Boss</span>
-        <span class="health">HP: 100</span>
-        <span class="level">LVL: 1</span>
+        <div>
+          <span class="health"></span>
+          <span class="level"></span>
+        </div>
         <img class="w-75" src="images/placeholder.png" onclick="attackBoss()">
       </div>
 
