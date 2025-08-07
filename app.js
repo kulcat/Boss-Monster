@@ -1,21 +1,40 @@
 
-// Default starting Arrays
 const heroesDefault = [
   {
-    name: 'a',
+    name: 'knight', //knight
     type: 'a',
     damage: 5,
-    health: 100,
-    maxHealth: 100,
+    health: 150,
+    maxHealth: 150,
+    level: 1,
     unlocked: true,
   },
   {
-    name: 'b',
+    name: 'archer', //archer
     type: 'b',
-    damage: 5,
-    health: 100,
-    maxHealth: 100,
+    damage: 10,
+    health: 75,
+    maxHealth: 75,
+    level: 1,
     unlocked: true,
+  },
+  {
+    name: 'mage', //mage
+    type: 'c',
+    damage: 20,
+    health: 50,
+    maxHealth: 50,
+    level: 1,
+    unlocked: false,
+  },
+  {
+    name: 'assassin', //assassin
+    type: 'd',
+    damage: 15,
+    health: 75,
+    maxHealth: 75,
+    level: 1,
+    unlocked: false,
   },
 ];
 
@@ -24,23 +43,61 @@ const bossDefault = {
   maxHealth: 100,
   damage: 5,
   level: 1,
-  attackRate: 250, //2000
+  attackRate: 2000, //2000
 };
+
+//unused
+const bossesDefault = [
+  {
+    name: 'boss',
+    health: 100,
+    maxHealth: 100,
+    damage: 5,
+    level: 1,
+    maxLevel: 5,
+    attackRate: 2000, //2000
+  },
+  {
+    name: 'boss',
+    health: 100,
+    maxHealth: 100,
+    damage: 5,
+    level: 1,
+    maxLevel: 5,
+    attackRate: 2000, //2000
+  },
+  {
+    name: 'boss',
+    health: 100,
+    maxHealth: 100,
+    damage: 5,
+    level: 1,
+    maxLevel: 5,
+    attackRate: 2000, //2000
+  },
+  {
+    name: 'boss',
+    health: 100,
+    maxHealth: 100,
+    damage: 5,
+    level: 1,
+    maxLevel: 5,
+    attackRate: 2000, //2000
+  },
+];
 
 // Modifiable arrays
 let heroes = structuredClone(heroesDefault);
 let boss = structuredClone(bossDefault);
 
 // Hero Section
-
-let heroGold = 0;
+let heroGold = 10000000; //0
 
 let healCost = 2;
 let healAmount = 10;
 
 let baseGoldAwarded = 50;
 
-// Increases hero hp by consuming gold
 function healHero(name) {
   if (!isGameOver) {
     let hero = heroes.find(hero => hero.name === name);
@@ -74,20 +131,57 @@ function healHero(name) {
   }
 }
 
-function drawHeroHealth(hero) {
-  let heroHealthElm = document.getElementById(hero.name).querySelector(".health");
-  heroHealthElm.innerText = "HP: " + hero.health;
+function levelUpHero(name) {
+  let hero = heroes.find(hero => hero.name === name);
+
+  if (hero.health > 0) {
+    if (heroGold >= 100) {
+      hero.level++;
+      hero.damage = Math.ceil(hero.damage * 1.2);
+      hero.maxHealth = Math.ceil(hero.maxHealth * 1.2);
+      hero.health = hero.maxHealth;
+
+      heroGold -= 100;
+
+      drawHeroLevel(hero);
+      drawHeroHealth(hero);
+      drawHeroGold();
+    }
+    else {
+      drawAlert("Not enough gold to level up.");
+    }
+  }
+  else {
+    drawAlert("Hero is dead, cannot be healed.");
+  }
 }
+
+function unlockHero(name) {
+  let hero = heroes.find(hero => hero.name === name);
+
+  if (hero.unlocked === false) {
+    if (heroGold >= 100) {
+      hero.unlocked = true;
+      heroGold -= 100;
+
+      let heroElm = document.getElementById(name);
+      heroElm.classList.remove("d-none");
+
+      heroElm.
+
+        drawHeroGold();
+    }
+    else {
+      drawAlert("Not enough gold to unlock.");
+    }
+  }
+}
+
 
 // Awards heroes gold for defeating a boss
 function awardHeroes() {
   heroGold += (baseGoldAwarded * boss.level);
   drawHeroGold();
-}
-
-function drawHeroGold() {
-  let heroGoldElm = document.getElementById('heroGold');
-  heroGoldElm.innerText = "Gold: " + heroGold;
 }
 
 // Decreases boss hp based on combined hero dmg
@@ -110,21 +204,23 @@ function attackBoss() {
   }
 }
 
-// Decrease each hero's hp based on boss dmg * level
 function bossAttack() {
   if (!isGameOver) {
     let totalHeroHealth = 0;
 
     heroes.forEach(hero => {
-      if (hero.health > 0) {
-        hero.health -= (boss.damage * Math.ceil(boss.level / 2));
+      if (hero.unlocked === true) {
+        if (hero.health > 0) {
+          hero.health -= (boss.damage * Math.ceil(boss.level / 2));
 
-        totalHeroHealth += hero.health;
-        drawHeroHealth(hero);
-      }
-      else {
-        hero.health = 0;
-        drawHeroHealth(hero);
+          totalHeroHealth += hero.health;
+          drawHeroHealth(hero);
+        }
+
+        if (hero.health <= 0) {
+          hero.health = 0;
+          drawHeroHealth(hero);
+        }
       }
     });
 
@@ -139,24 +235,13 @@ function bossAttack() {
 
 let bossAttackInterval = setInterval(bossAttack, boss.attackRate);
 
-function drawBossHealth() {
-  let bossHealthElm = document.getElementById('boss').querySelector(".health");
-  bossHealthElm.innerText = "HP: " + boss.health;
-}
-
-function drawBossLevel() {
-  let bossLevelElm = document.getElementById('boss').querySelector(".level");
-  bossLevelElm.innerText = "LVL: " + boss.level;
-}
-
 function levelUpBoss() {
   boss.level++;
-  boss.maxHealth *= Math.ceil(boss.level / 2);
+  boss.maxHealth *= Math.ceil(boss.level / 3);
   boss.health = boss.maxHealth;
 
   // increase attack rate by 5% each level
   boss.attackRate = Math.ceil(boss.attackRate * 0.95);
-  console.log(boss.attackRate);
 
   clearInterval(bossAttackInterval);
   bossAttackInterval = setInterval(bossAttack, boss.attackRate);
@@ -167,13 +252,102 @@ function levelUpBoss() {
   drawBossLevel();
 }
 
-// Game related functions
+// UI/DOM
+function drawAlert(message) {
+  let alertsContainer = document.getElementById('alerts');
 
+  if (isGameOver) {
+    alertsContainer.innerHTML = `<span class="alert text-danger">-GAME OVER</span>`;
+  }
+  else {
+    alertsContainer.innerHTML = `<span class="alert text-warning">-${message}</span>`;
+  }
+}
+
+function drawHeroLevel(hero) {
+  let heroLevelElm = document.getElementById(hero.name).querySelector(".level");
+  heroLevelElm.innerText = "LVL: " + hero.level;
+}
+
+function drawHeroHealth(hero) {
+  let heroHealthElm = document.getElementById(hero.name).querySelector(".health");
+  heroHealthElm.innerText = "HP: " + hero.health;
+}
+
+function drawHeroGold() {
+  let heroGoldElm = document.getElementById('heroGold');
+  heroGoldElm.innerText = "Gold: " + heroGold;
+}
+
+function drawBossHealth() {
+  let bossHealthElm = document.getElementById('boss').querySelector(".health");
+  bossHealthElm.innerText = "HP: " + boss.health;
+}
+
+function drawBossLevel() {
+  let bossLevelElm = document.getElementById('boss').querySelector(".level");
+  bossLevelElm.innerText = "LVL: " + boss.level;
+}
+
+// Store
+let heroPrice = 500;
+let autoHealPrice = 1000;
+
+let autoHealInterval = null;
+let autoHealRate = 5000;
+
+function buyItem(itemName) {
+  let item = document.getElementById(itemName);
+
+  switch (itemName) {
+    case 'autoHeal':
+      if (heroGold >= autoHealPrice) {
+        autoHealInterval = setInterval(() => {
+          heroes.forEach(hero => {
+            if (hero.unlocked === true && hero.health > 0) {
+              healHero(hero.name);
+            }
+          });
+        }, autoHealRate);
+        heroGold -= autoHealPrice;
+        drawHeroGold();
+        item.classList.add('disabled');
+      }
+      else {
+        drawAlert("Not enough gold.");
+      }
+      break;
+    case 'unlockHero':
+      if (heroGold >= heroPrice) {
+        let hero = heroes.find(hero => hero.unlocked === false);
+        hero.unlocked = true;
+
+        let heroElm = document.getElementById(hero.name);
+        heroElm.classList.remove("d-none");
+
+        heroGold -= heroPrice;
+        drawHeroGold();
+
+        if (heroes.findIndex(hero => hero.unlocked === false) === 0) {
+          item.classList('disabled');
+        }
+      }
+      else {
+        drawAlert("Not enough gold.");
+      }
+      break;
+    default:
+      break;
+  }
+}
+
+// Game
 let isGameOver = false;
 
 function resetGame() {
 
   isGameOver = false;
+
   // Reset object arrays to default
   heroes = structuredClone(heroesDefault);
   boss = structuredClone(bossDefault);
@@ -183,6 +357,9 @@ function resetGame() {
   // Reset boss attack interval
   clearInterval(bossAttackInterval);
   bossAttackInterval = setInterval(bossAttack, boss.attackRate);
+
+  clearInterval(autoHealInterval);
+  autoHealInterval = null;
 
   // Reset alerts
   let alertsContainer = document.getElementById('alerts');
@@ -195,16 +372,24 @@ function resetGame() {
   drawBossHealth();
   drawHeroGold();
 
+  // reset store buttons
+  let items = document.querySelectorAll('.item');
+  items.forEach(item => {
+    item.classList.remove('disabled');
+  });
+
+  // reset heroes visibility
+  heroes.forEach(hero => {
+    let heroElm = document.getElementById(hero.name);
+    if (hero.unlocked === true) {
+      heroElm.classList.remove("d-none");
+    }
+    else {
+      heroElm.classList.add("d-none");
+    }
+  });
+
   drawAlert("Reset successfully.")
 }
 
-function drawAlert(message) {
-  let alertsContainer = document.getElementById('alerts');
 
-  if (isGameOver) {
-    alertsContainer.innerHTML = `<span class="alert text-danger">-GAME OVER</span>`;
-  }
-  else {
-    alertsContainer.innerHTML = `<span class="alert text-warning">-${message}</span>`;
-  }
-}
