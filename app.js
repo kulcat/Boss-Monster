@@ -1,7 +1,9 @@
 
+//ANCHOR default objects / object arrays
+
 const heroesDefault = [
   {
-    name: 'knight', //knight
+    name: 'knight',
     type: 'a',
     damage: 5,
     health: 150,
@@ -10,7 +12,7 @@ const heroesDefault = [
     unlocked: true,
   },
   {
-    name: 'archer', //archer
+    name: 'archer',
     type: 'b',
     damage: 10,
     health: 75,
@@ -19,7 +21,7 @@ const heroesDefault = [
     unlocked: true,
   },
   {
-    name: 'mage', //mage
+    name: 'mage',
     type: 'c',
     damage: 20,
     health: 50,
@@ -28,7 +30,7 @@ const heroesDefault = [
     unlocked: false,
   },
   {
-    name: 'assassin', //assassin
+    name: 'assassin',
     type: 'd',
     damage: 15,
     health: 75,
@@ -46,57 +48,76 @@ const bossDefault = {
   attackRate: 2000, //2000
 };
 
-//unused
-const bossesDefault = [
-  {
-    name: 'boss',
-    health: 100,
-    maxHealth: 100,
-    damage: 5,
-    level: 1,
-    maxLevel: 5,
-    attackRate: 2000, //2000
-  },
-  {
-    name: 'boss',
-    health: 100,
-    maxHealth: 100,
-    damage: 5,
-    level: 1,
-    maxLevel: 5,
-    attackRate: 2000, //2000
-  },
-  {
-    name: 'boss',
-    health: 100,
-    maxHealth: 100,
-    damage: 5,
-    level: 1,
-    maxLevel: 5,
-    attackRate: 2000, //2000
-  },
-  {
-    name: 'boss',
-    health: 100,
-    maxHealth: 100,
-    damage: 5,
-    level: 1,
-    maxLevel: 5,
-    attackRate: 2000, //2000
-  },
-];
+// Changing bosses not implemented yet
 
-// Modifiable arrays
+// const bossesDefault = [
+//   {
+//     name: 'boss',
+//     health: 100,
+//     maxHealth: 100,
+//     damage: 5,
+//     level: 1,
+//     maxLevel: 5,
+//     attackRate: 2000, //2000
+//   },
+//   {
+//     name: 'boss',
+//     health: 100,
+//     maxHealth: 100,
+//     damage: 5,
+//     level: 1,
+//     maxLevel: 5,
+//     attackRate: 2000, //2000
+//   },
+//   {
+//     name: 'boss',
+//     health: 100,
+//     maxHealth: 100,
+//     damage: 5,
+//     level: 1,
+//     maxLevel: 5,
+//     attackRate: 2000, //2000
+//   },
+//   {
+//     name: 'boss',
+//     health: 100,
+//     maxHealth: 100,
+//     damage: 5,
+//     level: 1,
+//     maxLevel: 5,
+//     attackRate: 2000, //2000
+//   },
+// ];
+
+// Used to easily revert values to default
 let heroes = structuredClone(heroesDefault);
 let boss = structuredClone(bossDefault);
 
-// Hero Section
-let heroGold = 10000000; //0
+// ANCHOR Config
+
+// Hero
+let startingHeroGold = 1000000; //0, changed for testing purposes
+let heroGold = startingHeroGold;
 
 let healCost = 2;
-let healAmount = 10;
+let healPercentage = 0.1; //percent of max hp
 
-let baseGoldAwarded = 50;
+let baseGoldAwarded = 100;
+
+// Boss
+let bossAttackInterval = setInterval(bossAttack, boss.attackRate);
+
+// Store
+let heroPrice = 500;
+let autoHealPrice = 1000;
+
+let autoHealInterval = null;
+let autoHealRate = 5000;
+
+// Game
+let isGameOver = false;
+
+//ANCHOR Hero 
 
 function healHero(name) {
   if (!isGameOver) {
@@ -107,12 +128,15 @@ function healHero(name) {
         drawAlert("Hero is dead, cannot be healed.");
         break;
 
-      case 100:
+      case hero.maxHealth:
         drawAlert("Hero HP is full, cannot be healed.");
         break;
 
       default:
         if (heroGold >= healCost) {
+
+          let healAmount = Math.ceil(hero.maxHealth * healPercentage);
+          console.log(healAmount);
           if ((hero.health + healAmount) > hero.maxHealth) {
             hero.health = hero.maxHealth;
           }
@@ -162,17 +186,18 @@ function awardHeroes() {
   drawHeroGold();
 }
 
+//ANCHOR Boss 
+
 // Decreases boss hp based on combined hero dmg
 function attackBoss() {
   if (!isGameOver) {
     let totalDamage = 0;
     heroes.forEach(hero => {
-      if (hero.health > 0 && hero.unlocked === true) {
+      if (hero.health > 0 && hero.unlocked) {
         totalDamage += hero.damage;
       }
     });
     boss.health -= totalDamage;
-
     drawBossHealth();
 
     if (boss.health <= 0) {
@@ -183,35 +208,30 @@ function attackBoss() {
 }
 
 function bossAttack() {
-  if (!isGameOver) {
-    let totalHeroHealth = 0;
+  let totalHeroHealth = 0;
 
-    heroes.forEach(hero => {
-      if (hero.unlocked === true) {
-        if (hero.health > 0) {
-          hero.health -= (boss.damage * Math.ceil(boss.level / 2));
+  heroes.forEach(hero => {
+    if (hero.unlocked) {
+      if (hero.health > 0) {
+        hero.health -= (boss.damage * Math.ceil(boss.level / 2));
 
-          totalHeroHealth += hero.health;
-          drawHeroHealth(hero);
-        }
-
-        if (hero.health <= 0) {
-          hero.health = 0;
-          drawHeroHealth(hero);
-        }
+        totalHeroHealth += hero.health;
       }
-    });
 
-    if (totalHeroHealth <= 0) {
-      // Game End
-      clearInterval(bossAttackInterval);
-      isGameOver = true;
-      drawAlert("GAME OVER");
+      if (hero.health <= 0) {
+        hero.health = 0;
+      }
+      drawHeroHealth(hero);
     }
+  });
+
+  if (totalHeroHealth <= 0) {
+    // Game End
+    clearInterval(bossAttackInterval);
+    isGameOver = true;
+    drawAlert("GAME OVER");
   }
 }
-
-let bossAttackInterval = setInterval(bossAttack, boss.attackRate);
 
 function levelUpBoss() {
   boss.level++;
@@ -230,7 +250,8 @@ function levelUpBoss() {
   drawBossLevel();
 }
 
-// UI/DOM
+//ANCHOR UI/DOM
+
 function drawAlert(message) {
   let alertsContainer = document.getElementById('alerts');
 
@@ -241,6 +262,8 @@ function drawAlert(message) {
     alertsContainer.innerHTML = `<span class="alert text-warning">-${message}</span>`;
   }
 }
+
+// Hero UI
 
 function drawHeroLevel(hero) {
   let heroLevelElm = document.getElementById(hero.name).querySelector(".level");
@@ -257,6 +280,8 @@ function drawHeroGold() {
   heroGoldElm.innerText = "Gold: " + heroGold;
 }
 
+// Boss UI
+
 function drawBossHealth() {
   let bossHealthElm = document.getElementById('boss').querySelector(".health");
   bossHealthElm.innerText = "HP: " + boss.health;
@@ -267,76 +292,59 @@ function drawBossLevel() {
   bossLevelElm.innerText = "LVL: " + boss.level;
 }
 
-// UI update
-heroes.forEach(hero => {
-  if (hero.unlocked === true) {
-    drawHeroHealth(hero);
-    drawHeroLevel(hero);
-  }
-});
-
-drawHeroGold();
-drawBossHealth();
-drawBossLevel();
-
-// Store
-let heroPrice = 500;
-let autoHealPrice = 1000;
-
-let autoHealInterval = null;
-let autoHealRate = 5000;
+//ANCHOR Store
 
 function buyItem(itemName) {
-  let item = document.getElementById(itemName);
+  if (!isGameOver) {
+    let item = document.getElementById(itemName);
 
-  switch (itemName) {
-    case 'autoHeal':
-      if (heroGold >= autoHealPrice) {
-        autoHealInterval = setInterval(() => {
-          heroes.forEach(hero => {
-            if (hero.unlocked === true && hero.health > 0 && hero.health < hero.maxHealth) {
-              healHero(hero.name);
-            }
-          });
-        }, autoHealRate);
-        drawHeroGold();
+    switch (itemName) {
+      case 'autoHeal':
+        if (heroGold >= autoHealPrice) {
+          autoHealInterval = setInterval(() => {
+            heroes.forEach(hero => {
+              if (hero.unlocked && hero.health > 0 && hero.health < hero.maxHealth) {
+                healHero(hero.name);
+              }
+            });
+          }, autoHealRate);
+          drawHeroGold();
 
-        // make button disabled after purchasing
-        item.disabled = true;
-      }
-      else {
-        drawAlert("Not enough gold.");
-      }
-      break;
-    case 'unlockHero':
-      let hero = heroes.find(hero => hero.unlocked === false);
-      if (heroGold >= heroPrice && hero) {
-        hero.unlocked = true;
-
-        let heroElm = document.getElementById(hero.name);
-        heroElm.classList.remove("d-none");
-        drawHeroHealth(hero);
-        drawHeroLevel(hero);
-
-        heroGold -= heroPrice;
-        drawHeroGold();
-
-        if (heroes.findIndex(hero => hero.unlocked === false) < 0) {
+          // make button disabled after purchasing
           item.disabled = true;
         }
-      }
-      else {
-        drawAlert("Not enough gold.");
-      }
-      break;
-    default:
-      break;
+        else {
+          drawAlert("Not enough gold.");
+        }
+        break;
+      case 'unlockHero':
+        let hero = heroes.find(hero => !hero.unlocked);
+        if (heroGold >= heroPrice && hero) {
+          hero.unlocked = true;
+
+          let heroElm = document.getElementById(hero.name);
+          heroElm.classList.remove("d-none");
+          drawHeroHealth(hero);
+          drawHeroLevel(hero);
+
+          heroGold -= heroPrice;
+          drawHeroGold();
+
+          if (heroes.findIndex(hero => !hero.unlocked) < 0) {
+            item.disabled = true;
+          }
+        }
+        else {
+          drawAlert("Not enough gold.");
+        }
+        break;
+      default:
+        break;
+    }
   }
 }
 
-// Game
-let isGameOver = false;
-
+//ANCHOR Reset Game
 function resetGame() {
 
   isGameOver = false;
@@ -345,7 +353,7 @@ function resetGame() {
   heroes = structuredClone(heroesDefault);
   boss = structuredClone(bossDefault);
 
-  heroGold = 0;
+  heroGold = startingHeroGold;
 
   // Reset boss attack interval
   clearInterval(bossAttackInterval);
@@ -354,16 +362,21 @@ function resetGame() {
   clearInterval(autoHealInterval);
   autoHealInterval = null;
 
-  // Reset alerts
+  // reset alerts
   let alertsContainer = document.getElementById('alerts');
   alertsContainer.innerHTML = '';
 
   // update DOM/UI
   heroes.forEach(hero => {
-    drawHeroHealth(hero);
+    if (hero.unlocked) {
+      drawHeroHealth(hero);
+      drawHeroLevel(hero);
+    }
   });
-  drawBossHealth();
+
   drawHeroGold();
+  drawBossHealth();
+  drawBossLevel();
 
   // reset store buttons
   let items = document.querySelectorAll('.item');
@@ -374,7 +387,7 @@ function resetGame() {
   // reset heroes visibility
   heroes.forEach(hero => {
     let heroElm = document.getElementById(hero.name);
-    if (hero.unlocked === true) {
+    if (hero.unlocked) {
       heroElm.classList.remove("d-none");
     }
     else {
@@ -382,7 +395,19 @@ function resetGame() {
     }
   });
 
-  drawAlert("Reset successfully.")
+  drawAlert("Reset successfully.");
 }
 
+// ANCHOR Main
 
+// UI update at start
+heroes.forEach(hero => {
+  if (hero.unlocked) {
+    drawHeroHealth(hero);
+    drawHeroLevel(hero);
+  }
+});
+
+drawHeroGold();
+drawBossHealth();
+drawBossLevel();
