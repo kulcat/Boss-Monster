@@ -323,15 +323,17 @@ function buyItem(itemName) {
         }, autoHealRate);
         heroGold -= autoHealPrice;
         drawHeroGold();
-        item.attributes.add('disabled');
+
+        // make button disabled after purchasing
+        item.disabled = true;
       }
       else {
         drawAlert("Not enough gold.");
       }
       break;
     case 'unlockHero':
-      if (heroGold >= heroPrice) {
-        let hero = heroes.find(hero => hero.unlocked === false);
+      let hero = heroes.find(hero => hero.unlocked === false);
+      if (heroGold >= heroPrice && hero) {
         hero.unlocked = true;
 
         let heroElm = document.getElementById(hero.name);
@@ -342,8 +344,8 @@ function buyItem(itemName) {
         heroGold -= heroPrice;
         drawHeroGold();
 
-        if (heroes.findIndex(hero => hero.unlocked === false) === 0) {
-          item.attributes.add('disabled');
+        if (heroes.findIndex(hero => hero.unlocked === false) < 0) {
+          item.disabled = true;
         }
       }
       else {
@@ -389,7 +391,7 @@ function resetGame() {
   // reset store buttons
   let items = document.querySelectorAll('.item');
   items.forEach(item => {
-    item.classList.remove('disabled');
+    item.disabled = false;
   });
 
   // reset heroes visibility
