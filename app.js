@@ -1,11 +1,12 @@
 
-// Default Starting Arrays
+// Default starting Arrays
 const heroesDefault = [
   {
     name: 'a',
     type: 'a',
     damage: 5,
     health: 100,
+    maxHealth: 100,
     unlocked: true,
   },
   {
@@ -13,15 +14,9 @@ const heroesDefault = [
     type: 'b',
     damage: 5,
     health: 100,
+    maxHealth: 100,
     unlocked: true,
   },
-  // {
-  //   name: 'c',
-  //   type: 'c',
-  //   damage: 5,
-  //   health: 100,
-  //   unlocked: false,
-  // }
 ];
 
 const bossDefault = {
@@ -32,7 +27,7 @@ const bossDefault = {
   attackRate: 2000,
 };
 
-// Modifiable Arrays
+// Modifiable arrays
 let heroes = structuredClone(heroesDefault);
 let boss = structuredClone(bossDefault);
 
@@ -47,27 +42,33 @@ let baseGoldAwarded = 50;
 
 // Increases hero hp by consuming gold
 function healHero(name) {
-  let hero = heroes.find(hero => hero.name === name);
+  if (!isGameOver) {
+    let hero = heroes.find(hero => hero.name === name);
 
-  switch (hero.health) {
-    case 0:
-      drawAlert("Hero is dead, cannot be healed.");
-      break;
-    case 100:
-      drawAlert("Hero HP is full, cannot be healed.");
-      break;
-    default:
-      if (heroGold >= healCost) {
-        hero.health += healAmount;
-        drawHeroHealth(hero);
-
-        heroGold -= healCost;
-        drawHeroGold();
-      }
-      else {
-        drawAlert("Not enough gold to heal.")
-      }
-      break;
+    switch (hero.health) {
+      case 0:
+        drawAlert("Hero is dead, cannot be healed.");
+        break;
+      case 100:
+        drawAlert("Hero HP is full, cannot be healed.");
+        break;
+      default:
+        if (heroGold >= healCost) {
+          if ((hero.health + healAmount) > hero.maxHealth) {
+            hero.health = hero.maxHealth;
+          }
+          else {
+            hero.health += healAmount;
+          }
+          heroGold -= healCost;
+          drawHeroHealth(hero);
+          drawHeroGold();
+        }
+        else {
+          drawAlert("Not enough gold.")
+        }
+        break;
+    }
   }
 }
 
@@ -89,42 +90,47 @@ function drawHeroGold() {
 
 // Decreases boss hp based on combined hero dmg
 function attackBoss() {
-  let totalDamage = 0;
-  heroes.forEach(hero => {
-    if (hero.health > 0 && hero.unlocked === true) {
-      totalDamage += hero.damage;
+  if (!isGameOver) {
+    let totalDamage = 0;
+    heroes.forEach(hero => {
+      if (hero.health > 0 && hero.unlocked === true) {
+        totalDamage += hero.damage;
+      }
+    });
+    boss.health -= totalDamage;
+
+    drawBossHealth();
+
+    if (boss.health <= 0) {
+      awardHeroes();
+      levelUpBoss();
     }
-  });
-  boss.health -= totalDamage;
-
-  drawBossHealth();
-
-  if (boss.health <= 0) {
-    awardHeroes();
-    levelUpBoss();
   }
 }
 
 // Decrease each hero's hp based on boss dmg * level
 function bossAttack() {
-  let totalHeroHealth = 0;
+  if (!isGameOver) {
+    let totalHeroHealth = 0;
 
-  heroes.forEach(hero => {
-    hero.health -= (boss.damage * boss.level);
-
-    totalHeroHealth += hero.health;
-    drawHeroHealth(hero);
-  });
-
-  if (totalHeroHealth <= 0) {
     heroes.forEach(hero => {
-      hero.health = 0;
+      hero.health -= (boss.damage * boss.level);
+
+      totalHeroHealth += hero.health;
       drawHeroHealth(hero);
     });
 
-    // Game End
-    clearInterval(bossAttackInterval);
-    drawAlert("GAME OVER");
+    if (totalHeroHealth <= 0) {
+      heroes.forEach(hero => {
+        hero.health = 0;
+        drawHeroHealth(hero);
+      });
+
+      // Game End
+      clearInterval(bossAttackInterval);
+      isGameOver = true;
+      drawAlert("GAME OVER");
+    }
   }
 }
 
@@ -133,6 +139,11 @@ let bossAttackInterval = setInterval(bossAttack, boss.attackRate);
 function drawBossHealth() {
   let bossHealthElm = document.getElementById('boss').querySelector(".health");
   bossHealthElm.innerText = "HP: " + boss.health;
+}
+
+function drawBossLevel() {
+  let bossLevelElm = document.getElementById('boss').querySelector(".level");
+  bossLevelElm.innerText = "LVL: " + boss.level;
 }
 
 function levelUpBoss() {
@@ -145,17 +156,21 @@ function levelUpBoss() {
   console.log(boss.attackRate);
 
   clearInterval(bossAttackInterval);
-  bossAttackRate = setInterval(bossAttack, boss.attackRate);
+  bossAttackInterval = setInterval(bossAttack, boss.attackRate);
 
   // Game End
   drawAlert(`Boss is now LVL ${boss.level}`);
   drawBossHealth();
+  drawBossLevel();
 }
 
 // Game related functions
 
+let isGameOver = false;
+
 function resetGame() {
 
+  isGameOver = false;
   // Reset object arrays to default
   heroes = structuredClone(heroesDefault);
   boss = structuredClone(bossDefault);
@@ -183,10 +198,11 @@ function resetGame() {
 function drawAlert(message) {
   let alertsContainer = document.getElementById('alerts');
 
-  // If there are 5 alerts remove the oldest alert
-  if (alertsContainer.children.length === 5) {
-    alertsContainer.firstElementChild.remove();
+  if (!isGameOver) {
+    alertsContainer.innerHTML = `<span class="alert">-${message}</span>`;
   }
-  alertsContainer.innerHTML += `<span class="alert">-${message}</span>`;
+  else {
+    alertsContainer.innerHTML = `<span class="alert">-GAME OVER</span>`;
+  }
 }
 
