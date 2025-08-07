@@ -198,11 +198,10 @@ function resetGame() {
 function drawAlert(message) {
   let alertsContainer = document.getElementById('alerts');
 
-  if (!isGameOver) {
-    alertsContainer.innerHTML = `<span class="alert">-${message}</span>`;
-  }
-  else {
+  if (isGameOver) {
     alertsContainer.innerHTML = `<span class="alert">-GAME OVER</span>`;
   }
+  else {
+    alertsContainer.innerHTML = `<span class="alert">-${message}</span>`;
+  }
 }
-
