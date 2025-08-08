@@ -11,7 +11,7 @@
     integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
     crossorigin="anonymous"></script>
   <link href="style.css" rel="stylesheet" type="text/css">
-  <script src="app.js" defer></script>
+  <script type="module" src="./js/main.js" defer></script>
 </head>
 
 <body class="container-fluid">
@@ -25,7 +25,7 @@
     <div id="heroesContainer" class="row justify-content-around w-100 g-0">
 
       <div id="knight" class="hero col d-flex flex-column align-items-center">
-        <img class="w-25" src="images/placeholder.png" onclick="healHero(this.parentElement.id)">
+        <img class="w-25" src="images/placeholder.png">
         <span class="h4 name">Knight</span>
         <div>
           <span class="health"></span>
@@ -33,11 +33,11 @@
           <span class="level"></span>
         </div>
         <span class="healCost">Click to Heal: 2</span>
-        <button class="btn btn-dark levelUp" onclick="levelUpHero(this.parentElement.id)">LVL Up: 100</button>
+        <button class="btn btn-dark levelUp">LVL Up: 100</button>
       </div>
 
       <div id="archer" class="hero col d-flex flex-column align-items-center">
-        <img class="w-25" src="images/placeholder.png" onclick="healHero(this.parentElement.id)">
+        <img class="w-25" src="images/placeholder.png">
         <span class="h4 name">Archer</span>
         <div>
           <span class="health"></span>
@@ -45,11 +45,11 @@
           <span class="level"></span>
         </div>
         <span class="healCost">Click to Heal: 2</span>
-        <button class="btn btn-dark levelUp" onclick="levelUpHero(this.parentElement.id)">LVL Up: 100</button>
+        <button class="btn btn-dark levelUp">LVL Up: 100</button>
       </div>
 
       <div id="mage" class="hero col d-flex flex-column align-items-center d-none">
-        <img class="w-25" src="images/placeholder.png" onclick="healHero(this.parentElement.id)">
+        <img class="w-25" src="images/placeholder.png">
         <span class="h4 name">Mage</span>
         <div>
           <span class="health"></span>
@@ -57,11 +57,11 @@
           <span class="level"></span>
         </div>
         <span class="healCost">Click to Heal: 2</span>
-        <button class="btn btn-dark levelUp" onclick="levelUpHero(this.parentElement.id)">LVL Up: 100</button>
+        <button class="btn btn-dark levelUp">LVL Up: 100</button>
       </div>
 
       <div id="assassin" class="hero col d-flex flex-column align-items-center d-none">
-        <img class="w-25" src="images/placeholder.png" onclick="healHero(this.parentElement.id)">
+        <img class="w-25" src="images/placeholder.png">
         <span class="h4 name">Assassin</span>
         <div>
           <span class="health"></span>
@@ -69,7 +69,7 @@
           <span class="level"></span>
         </div>
         <span class="healCost">Click to Heal: 2</span>
-        <button class="btn btn-dark levelUp" onclick="levelUpHero(this.parentElement.id)">LVL Up: 100</button>
+        <button class="btn btn-dark levelUp">LVL Up: 100</button>
       </div>
 
     </div>
@@ -83,7 +83,7 @@
           <span class="damage"></span>
           <span class="level"></span>
         </div>
-        <img class="w-75" src="images/placeholder.png" onclick="attackBoss()">
+        <img class="w-75" src="images/placeholder.png">
       </div>
 
     </div>
@@ -94,15 +94,15 @@
         <span id="heroGold"></span>
         <span class="h4">Store</span>
         <div id=" items">
-          <button id="autoHeal" class="item btn btn-dark" onclick="buyItem(this.id)">Auto-Heal: 1000</button>
-          <button id="unlockHero" class="item btn btn-dark" onclick="buyItem(this.id)">Unlock Hero: 500</button>
+          <button id="autoHeal" class="item btn btn-dark">Auto-Heal: 1000</button>
+          <button id="unlockHero" class="item btn btn-dark">Unlock Hero: 500</button>
         </div>
       </div>
 
       <div id="alerts" class="h4 col d-flex flex-column align-items-center"></div>
 
       <div class="col d-flex flex-column justify-content-center align-items-center">
-        <button id="reset" class="btn btn-danger h4" onclick="resetGame()">Reset</button>
+        <button id="reset" class="btn btn-danger h4">Reset</button>
       </div>
 
     </div>
