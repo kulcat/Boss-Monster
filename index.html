@@ -29,6 +29,7 @@
         <span class="h4 name">Knight</span>
         <div>
           <span class="health"></span>
+          <span class="damage"></span>
           <span class="level"></span>
         </div>
         <span class="healCost">Click to Heal: 2</span>
@@ -40,6 +41,7 @@
         <span class="h4 name">Archer</span>
         <div>
           <span class="health"></span>
+          <span class="damage"></span>
           <span class="level"></span>
         </div>
         <span class="healCost">Click to Heal: 2</span>
@@ -51,6 +53,7 @@
         <span class="h4 name">Mage</span>
         <div>
           <span class="health"></span>
+          <span class="damage"></span>
           <span class="level"></span>
         </div>
         <span class="healCost">Click to Heal: 2</span>
@@ -62,6 +65,7 @@
         <span class="h4 name">Assassin</span>
         <div>
           <span class="health"></span>
+          <span class="damage"></span>
           <span class="level"></span>
         </div>
         <span class="healCost">Click to Heal: 2</span>
@@ -73,9 +77,10 @@
     <div id="bossContainer" class="row justify-content-center g-0">
 
       <div id="boss" class="boss w-25 d-flex flex-column align-items-center">
-        <span class="name h2">Boss</span>
+        <span class="name h2 text-capitalize">Boss</span>
         <div>
           <span class="health"></span>
+          <span class="damage"></span>
           <span class="level"></span>
         </div>
         <img class="w-75" src="images/placeholder.png" onclick="attackBoss()">
@@ -88,7 +93,7 @@
       <div id="store" class="col d-flex flex-column align-items-center ">
         <span id="heroGold"></span>
         <span class="h4">Store</span>
-        <div id="items">
+        <div id=" items">
           <button id="autoHeal" class="item btn btn-dark" onclick="buyItem(this.id)">Auto-Heal: 1000</button>
           <button id="unlockHero" class="item btn btn-dark" onclick="buyItem(this.id)">Unlock Hero: 500</button>
         </div>
